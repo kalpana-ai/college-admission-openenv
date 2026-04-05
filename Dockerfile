@@ -30,12 +30,12 @@ COPY . /app
 ENV PYTHONPATH="/app:$PYTHONPATH"
 
 # Expose BOTH ports (important)
-EXPOSE 8000
+# EXPOSE 8000
 EXPOSE 7860
 
 # Healthcheck (use API port — required for OpenEnv)
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+  CMD curl -f http://localhost:7860/health || exit 1
 
 # Default command → run FastAPI (OpenEnv compliant)
-CMD ["uvicorn", "server.app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "server.app:app", "--host", "0.0.0.0", "--port", "7860"]

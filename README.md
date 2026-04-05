@@ -3,9 +3,7 @@ title: College Admission Counselling Env
 emoji: 🎓
 colorFrom: purple
 colorTo: blue
-sdk: gradio
-sdk_version: "5.29.1"
-app_file: app.py
+sdk: docker
 pinned: true
 python_version: "3.11"
 tags:
