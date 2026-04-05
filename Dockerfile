@@ -1,19 +1,17 @@
-# College Admission Counselling Environment
-# Runs FastAPI (OpenEnv) + Gradio on port 7860
-# Architecture: FastAPI is main app, Gradio mounted at /ui
-
+# Base Image
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# System deps
+# System dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Python packages
-COPY server/requirements.txt /tmp/server_requirements.txt
+# Install Python dependencies
+COPY server/requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r /tmp/requirements.txt && \
     pip install --no-cache-dir \
         "openenv-core[core]>=0.2.1" \
         "fastapi>=0.115.0" \
@@ -25,15 +23,19 @@ RUN pip install --no-cache-dir --upgrade pip && \
         "pillow>=10.0.0" \
         "requests>=2.31.0"
 
-# Copy all project files
+# Copy full project
 COPY . /app
 
+# Set Python path
 ENV PYTHONPATH="/app:$PYTHONPATH"
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-    CMD curl -f http://localhost:7860/health || exit 1
-
+# Expose BOTH ports (important)
+EXPOSE 8000
 EXPOSE 7860
 
-# Run the combined FastAPI+Gradio app on port 7860
-CMD ["python", "-c", "from app import demo; demo.launch(server_name='0.0.0.0', server_port=7860)"]
+# Healthcheck (use API port — required for OpenEnv)
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Default command → run FastAPI (OpenEnv compliant)
+CMD ["uvicorn", "server.app:app", "--host", "0.0.0.0", "--port", "8000"]

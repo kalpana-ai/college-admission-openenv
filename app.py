@@ -326,6 +326,11 @@ async def api_schema():
     })
 
 
+# Build the config to ensure it's not None
+_ = demo.get_config()
+
+app = demo.app
+
 if __name__ == "__main__":
     print("Starting College Admission Counselling Environment...")
     print("  Gradio UI  → http://localhost:7860/")
