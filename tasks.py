@@ -219,7 +219,8 @@ def grade_task_2(episode_log: List[Dict]) -> float:
     """
     score = 0.0
     actions = [e["action"] for e in episode_log]
-    colleges = [e.get("target_college") or "" for e in episode_log]
+    # Use target_college if provided, else use the allotted_college at the time of action
+    colleges = [e.get("target_college") or e.get("allotted_college") or "" for e in episode_log]
 
     if "check_cutoffs" in actions:
         score += 0.10
@@ -261,7 +262,8 @@ def grade_task_3(episode_log: List[Dict]) -> float:
     """
     score = 0.0
     actions = [e["action"] for e in episode_log]
-    colleges = [e.get("target_college") or "" for e in episode_log]
+    # Use target_college if provided, else use the allotted_college at the time of action
+    colleges = [e.get("target_college") or e.get("allotted_college") or "" for e in episode_log]
 
     # Round 1: accepted IIT Delhi (holding strategy)
     r1 = [e for e in episode_log if e.get("round_number", 1) == 1]

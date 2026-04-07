@@ -142,6 +142,7 @@ class CollegeEnvironment(Environment):
         self._episode_log.append({
             "action": action.action,
             "target_college": action.target_college,
+            "allotted_college": self._allotted_college,
             "round_number": action.round_number or self._current_round,
             "step": self._state.step_count,
         })
@@ -232,7 +233,10 @@ class CollegeEnvironment(Environment):
 
         # ── pay_seat_fee ───────────────────────────────────────
         elif action.action == "pay_seat_fee":
-            if not self._seat_fee_paid:
+            if not self._allotted_college:
+                reward = -1.5
+                message = "ERROR: Cannot pay fee without an allotment!"
+            elif not self._seat_fee_paid:
                 self._seat_fee_paid = True
                 fee = COLLEGES.get(self._allotted_college or "", {}).get("fee", 70000)
                 reward = 2.0
