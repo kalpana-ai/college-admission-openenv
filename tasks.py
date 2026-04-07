@@ -172,8 +172,16 @@ TASKS: Dict[int, Task] = {
 
 
 # ─────────────────────────────────────────────────────────────
-# Grader functions — deterministic, return float 0.0 to 1.0
+# Grader functions — deterministic, return float strictly inside (0, 1)
 # ─────────────────────────────────────────────────────────────
+
+MIN_SCORE = 0.001
+MAX_SCORE = 0.999
+
+
+def _strict_score(score: float) -> float:
+    """Clamp scores to the validator's required open interval."""
+    return round(max(MIN_SCORE, min(MAX_SCORE, score)), 3)
 
 def grade_task_1(episode_log: List[Dict]) -> float:
     """
@@ -200,7 +208,7 @@ def grade_task_1(episode_log: List[Dict]) -> float:
     if "withdraw" in actions:
         score -= 0.50
 
-    return round(max(0.0, min(1.0, score)), 3)
+    return _strict_score(score)
 
 
 def grade_task_2(episode_log: List[Dict]) -> float:
@@ -242,7 +250,7 @@ def grade_task_2(episode_log: List[Dict]) -> float:
     if "withdraw" in actions:
         score -= 0.40
 
-    return round(max(0.0, min(1.0, score)), 3)
+    return _strict_score(score)
 
 
 def grade_task_3(episode_log: List[Dict]) -> float:
@@ -296,7 +304,7 @@ def grade_task_3(episode_log: List[Dict]) -> float:
     if "withdraw" in actions:
         score -= 0.50
 
-    return round(max(0.0, min(1.0, score)), 3)
+    return _strict_score(score)
 
 
 GRADERS = {

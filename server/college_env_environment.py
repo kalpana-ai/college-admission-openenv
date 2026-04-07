@@ -22,10 +22,10 @@ from openenv.core.env_server.types import State
 
 try:
     from ..models import CollegeAction, CollegeObservation
-    from ..tasks import TASKS, GRADERS, get_eligible_colleges, get_best_college, COLLEGES
+    from ..tasks import TASKS, GRADERS, MIN_SCORE, get_eligible_colleges, get_best_college, COLLEGES
 except ImportError:
     from models import CollegeAction, CollegeObservation
-    from tasks import TASKS, GRADERS, get_eligible_colleges, get_best_college, COLLEGES
+    from tasks import TASKS, GRADERS, MIN_SCORE, get_eligible_colleges, get_best_college, COLLEGES
 
 
 class CollegeEnvironment(Environment):
@@ -104,7 +104,7 @@ class CollegeEnvironment(Environment):
             steps_taken=0,
             reward=0.0,
             done=False,
-            task_score=0.0,
+            task_score=MIN_SCORE,
             message=(
                 f"[Task {self._task_id} — {task.difficulty}] {task.description} "
                 f"| Rank: {self._student_rank} ({self._student_category}) "
